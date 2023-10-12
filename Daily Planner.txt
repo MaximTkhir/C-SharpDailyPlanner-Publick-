@@ -1,0 +1,89 @@
+using System;
+using System.Collections.Generic;
+
+class Note
+{
+    public string Title { get; set; }
+    public string Description { get; set; }
+    public DateTime Date { get; set; }
+
+    public Note(string title, string description, DateTime date)
+    {
+        Title = title;
+        Description = description;
+        Date = date;
+    }
+
+    public void ShowDetails()
+    {
+        Console.WriteLine($"Заголовок: {Title}");
+        Console.WriteLine($"Дата: {Date.ToShortDateString()}");
+        Console.WriteLine($"Описание: {Description}");
+        Console.WriteLine();
+    }
+}
+
+class Program
+{
+    static List<Note> notes = new List<Note>();
+    static int currentNoteIndex = 0;
+
+    static void Main()
+    {
+        InitializeNotes();
+
+        Console.WriteLine("Добро пожаловать в ежедневник!");
+        Console.WriteLine("Используйте стрелки влево и вправо для навигации.");
+        Console.WriteLine("Нажмите Enter для открытия подробной информации.");
+        Console.WriteLine("Нажмите Escape для выхода.");
+        Console.WriteLine();
+
+        while (true)
+        {
+            Console.Clear();
+            DisplayCurrentNote();
+            var key = Console.ReadKey(true).Key;
+            switch (key)
+            {
+                case ConsoleKey.LeftArrow:
+                    ChangeNoteIndex(-1);
+                    break;
+                case ConsoleKey.RightArrow:
+                    ChangeNoteIndex(1);
+                    break;
+                case ConsoleKey.Enter:
+                    DisplayNoteDetails();
+                    break;
+                case ConsoleKey.Escape:
+                    return;
+            }
+        }
+    }
+
+    static void InitializeNotes()
+    {
+        notes.Add(new Note("Встреча с другом", "Встреча с Петей на кофе.", new DateTime(2023, 10, 6)));
+        notes.Add(new Note("Заказ продуктов", "Заказать продукты для выходных.", new DateTime(2023, 10, 8)));
+        notes.Add(new Note("Уборка", "Прибраться в комнате.", new DateTime(2023, 10, 13)));
+        // Добавьте еще заметок по вашему усмотрению
+    }
+
+    static void ChangeNoteIndex(int offset)
+    {
+        currentNoteIndex = (currentNoteIndex + offset + notes.Count) % notes.Count;
+    }
+
+    static void DisplayCurrentNote()
+    {
+        Console.WriteLine($"Заметка {currentNoteIndex + 1} из {notes.Count}");
+        Console.WriteLine(notes[currentNoteIndex].Title);
+    }
+
+    static void DisplayNoteDetails()
+    {
+        Console.Clear();
+        notes[currentNoteIndex].ShowDetails();
+        Console.WriteLine("Нажмите любую клавишу, чтобы вернуться.");
+        Console.ReadKey();
+    }
+}
